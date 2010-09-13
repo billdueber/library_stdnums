@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "library_stdnums"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Normalize and compute checkdigits for ISBN, ISSN, and LCCN}
+    gem.description = %Q{Normalization and checksum computation for ISBN (10 and 13), ISSN, and LCCN}
     gem.email = "bill@dueber.com"
     gem.homepage = "http://github.com/billdueber/library_stdnums"
     gem.authors = ["Bill Dueber"]
