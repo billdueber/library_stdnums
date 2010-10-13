@@ -4,9 +4,9 @@ Do common operations on ISBNs, ISSN, and LCCNs.
 
 What's supported:
 
-* **ISBN** Compute or validate checkdigit; convert to/from ISBN-10 and ISBN-13
-* **ISSN** Compute or validate checkdigit
-* **LCCN** Normalize
+* *ISBN* Compute or validate checkdigit; convert to/from ISBN-10 and ISBN-13
+* *ISSN* Compute or validate checkdigit
+* *LCCN* Normalize
 
 == Note on Patches/Pull Requests
  

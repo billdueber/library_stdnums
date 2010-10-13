@@ -53,7 +53,7 @@ describe "ISBN" do
     StdNum::ISBN.valid?('9780306406157').should.equal true
   end
   
-  it "finds a bad number false" do
+  it "finds a bad number invalid" do
     StdNum::ISBN.valid?('9780306406154').should.equal false
   end
   
@@ -72,6 +72,13 @@ describe "ISBN" do
   it "converts 13 to 10" do 
     StdNum::ISBN.convert_to_10('978-0-306-40615-7').should.equal '0306406152'
   end
+  
+  it "gets both normalized values" do
+    a = StdNum::ISBN.allNormalizedValues('978-0-306-40615-7')
+    a.sort.should.equal ['9780306406157', '0306406152' ].sort
+  end
+  
+  
   
 end
 

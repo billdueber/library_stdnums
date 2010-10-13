@@ -82,6 +82,27 @@ module StdNum
       prefix = isbn[3..11]
       return prefix + self.checkdigit(prefix + '0')
     end
+    
+    # Return an array of the ISBN10 and ISBN13 for the passed in value. You'll
+    # only get one value back if it's a 13-digit
+    # ISBN that can't be converted to an ISBN10.
+    # @param [String] isbn The original ISBN, in 10-character or 13-digit format
+    # @return [Array] Either the (one or two) normalized ISBNs, or an empty array if
+    # it can't be recognized.
+    
+    def self.allNormalizedValues isbn
+      isbn = StdNum.extractNumber isbn
+      case isbn.size
+      when 10
+        return [isbn, self.convert_to_13(isbn)]
+      when 13
+        return [isbn, self.convert_to_10(isbn)].compact
+      else
+        return []
+      end
+    end
+    
+    
   end
   
   module ISSN
