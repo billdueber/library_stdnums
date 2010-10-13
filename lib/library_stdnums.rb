@@ -20,6 +20,7 @@ module StdNum
     # @return [String] the one-character checkdigit
     def self.checkdigit isbn
       isbn = StdNum.extractNumber isbn
+      return nil unless isbn
       size = isbn.size
       return nil unless size == 10 or size == 13
       checkdigit = 0
@@ -46,6 +47,7 @@ module StdNum
     # @return [Boolean] Whether or not the checkdigit is correct
     def self.valid? isbn
       isbn = StdNum.extractNumber isbn
+      return false unless isbn
       size = isbn.size
       return false unless (size == 10 or size == 13)
       return isbn[-1..-1] == self.checkdigit(isbn)
@@ -59,6 +61,7 @@ module StdNum
     # @return [String] The converted 13-character ISBN, nil if something looks wrong, or whatever was passed in if it already looked like a 13-digit ISBN
     def self.convert_to_13 isbn
       isbn = StdNum.extractNumber isbn
+      return nil unless isbn
       size = isbn.size
       return isbn if size == 13
       return nil unless size == 10
@@ -74,6 +77,7 @@ module StdNum
     # @return [String] The converted 10-character ISBN, nil if something looks wrong, or whatever was passed in if it already looked like a 10-digit ISBN
     def self.convert_to_10 isbn
       isbn = StdNum.extractNumber isbn
+      return nil unless isbn
       size = isbn.size
       return isbn if size == 10
       return nil unless size == 13
@@ -92,6 +96,7 @@ module StdNum
     
     def self.allNormalizedValues isbn
       isbn = StdNum.extractNumber isbn
+      return [] unless isbn
       case isbn.size
       when 10
         return [isbn, self.convert_to_13(isbn)]
