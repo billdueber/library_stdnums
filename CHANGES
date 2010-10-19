@@ -1,3 +1,5 @@
+0.2.2
+  Added ISSN.valid?
 0.2.1
   Oops. Forgot to check to make sure there are *any* digits in the ISBN. fixed.
 0.2.0

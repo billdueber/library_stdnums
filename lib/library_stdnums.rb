@@ -129,7 +129,18 @@ module StdNum
       return 'X' if checkdigit == 10
       return checkdigit.to_s
     end
-      
+    
+    # Check to see if the checkdigit is correct
+    # @param [String] isbn The ISSN (we'll try to clean it up if possible)
+    # @return [Boolean] Whether or not the checkdigit is correct
+    def self.valid? issn
+      isbn = StdNum.extractNumber issn
+      return false unless issn
+      size = issn.size
+      return false unless (size == 8)
+      return issn[-1..-1] == self.checkdigit(issn)
+    end
+    
     
   end
   
