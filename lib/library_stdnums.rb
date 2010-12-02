@@ -117,14 +117,14 @@ module StdNum
     # @return [String] the one-character checkdigit
     def self.checkdigit issn
       issn = StdNum.extractNumber issn
-      return nil unless issn.size == 8
+      return nil unless issn and issn.size == 8
       digits = issn[0..6].split(//).map {|i| i.to_i}
       checkdigit = 0
       (0..6).each do |i|
         checkdigit += digits[i] * (8 - i) 
       end
       checkdigit = checkdigit % 11
-      return 0 if checkdigit == 0
+      return '0' if checkdigit == 0
       checkdigit = 11 - checkdigit
       return 'X' if checkdigit == 10
       return checkdigit.to_s
@@ -134,7 +134,7 @@ module StdNum
     # @param [String] isbn The ISSN (we'll try to clean it up if possible)
     # @return [Boolean] Whether or not the checkdigit is correct
     def self.valid? issn
-      isbn = StdNum.extractNumber issn
+      issn = StdNum.extractNumber issn
       return false unless issn
       size = issn.size
       return false unless (size == 8)

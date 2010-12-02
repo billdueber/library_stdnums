@@ -1,5 +1,6 @@
 0.2.2
   Added ISSN.valid?
+  Fixed error in ISSN.checksum when checksum was zero (was returning integer instead of string '0')
 0.2.1
   Oops. Forgot to check to make sure there are *any* digits in the ISBN. fixed.
 0.2.0
