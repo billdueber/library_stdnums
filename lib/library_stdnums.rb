@@ -33,12 +33,15 @@ module StdNum
         return 'X' if checkdigit == 10
         return checkdigit.to_s
       else # size == 13
+        checkdigit = 0
         digits = isbn[0..11].split(//).map {|i| i.to_i}
         6.times do
           checkdigit += digits.shift
           checkdigit += digits.shift * 3
         end
-        return (10 - (checkdigit % 10)).to_s
+        check = 10 - (checkdigit % 10)
+        check = 0 if check == 10
+        return check.to_s
       end
     end
     
@@ -155,7 +158,7 @@ module StdNum
         pre =  $1
         post = $2
         return nil unless post =~ /^\d+$/ # must be all digits
-        return "%s%06d" % [pre, post]
+        return "%s%06d" % [pre, post.to_i]
       end
       return str
     end

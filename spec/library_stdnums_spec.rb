@@ -49,6 +49,10 @@ describe "ISBN" do
     StdNum::ISBN.checkdigit('9780306406157').should.equal '7'
   end
   
+  it "computes a 13-digit checksum that is 0" do
+    StdNum::ISBN.checkdigit('9783837612950').should.equal '0'
+  end
+  
   it "finds a good number valid" do
     StdNum::ISBN.valid?('9780306406157').should.equal true
   end

@@ -1,3 +1,5 @@
+0.3.0
+  Wow. ISBN-13 checkdigit wasn't changing '10' to '0'. Blatant error; bad coding *and* testing.
 0.2.2
   Added ISSN.valid?
   Fixed error in ISSN.checksum when checksum was zero (was returning integer instead of string '0')
