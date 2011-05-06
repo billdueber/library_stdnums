@@ -1,30 +1,53 @@
 module StdNum
-  
-  STDNUMPAT = /^.*?(\d[\d\-]+[xX]?)/
-  
-  # Extract the most likely looking number from the string. This will be the first
-  # string of digits-and-hyphens-and-maybe-a-trailing-X, with the hypens removed
-  def self.extractNumber str
-    match = STDNUMPAT.match str
-    return nil unless match
-    return match[1].gsub(/\-/, '').upcase
+    
+  module Helpers
+    
+    STDNUMPAT = /^.*?(\d[\d\-]+[xX]?)/
+
+    # Extract the most likely looking number from the string. This will be the first
+    # string of digits-and-hyphens-and-maybe-a-trailing-X, with the hypens removed
+    def extractNumber str
+      match = STDNUMPAT.match str
+      return nil unless match
+      return match[1].gsub(/\-/, '').upcase
+    end
+    
+    def reduce_to_basics rawnum, valid_sizes = nil
+      return nil if rawnum.nil?
+      
+      num = extractNumber rawnum
+      
+      # Does it even look like a number?
+      return nil unless num
+      
+      # Return what we've got if we don't care about the size
+      return num unless valid_sizes
+      
+      # Check for valid size(s)
+      [valid_sizes].flatten.each do |s|
+        return num if num.size == s
+      end
+      
+      # Didn't check out size-wise. Return nil
+      return nil
+    end
   end
     
 
-
   module ISBN
+    extend Helpers
   
     # Compute check digits for 10 or 13-digit ISBNs. See algorithm at
     # http://en.wikipedia.org/wiki/International_Standard_Book_Number
     # @param [String] isbn The ISBN (we'll try to clean it up if possible)
-    # @return [String] the one-character checkdigit
-    def self.checkdigit isbn
-      isbn = StdNum.extractNumber isbn
+    # @param [Boolean] preprocessed Set to true if the ISBN has already been through reduce_to_basics
+    # @return [String,nil] the one-character checkdigit, or nil if it's not an ISBN string
+    def self.checkdigit isbn, preprocessed = false
+      isbn = reduce_to_basics isbn, [10,13] unless preprocessed
       return nil unless isbn
-      size = isbn.size
-      return nil unless size == 10 or size == 13
+
       checkdigit = 0
-      if size == 10
+      if isbn.size == 10
         digits = isbn[0..8].split(//).map {|i| i.to_i}
         (1..9).each do |i|
           checkdigit += digits[i-1] * i
@@ -47,66 +70,83 @@ module StdNum
     
     # Check to see if the checkdigit is correct
     # @param [String] isbn The ISBN (we'll try to clean it up if possible)
+    # @param [Boolean] preprocessed Set to true if the ISBN has already been through reduce_to_basics
     # @return [Boolean] Whether or not the checkdigit is correct
-    def self.valid? isbn
-      isbn = StdNum.extractNumber isbn
+    def self.valid? isbn, preprocessed = false
+      return nil if isbn.nil?
+      isbn = reduce_to_basics(isbn, [10,13]) unless preprocessed
       return false unless isbn
-      size = isbn.size
-      return false unless (size == 10 or size == 13)
-      return isbn[-1..-1] == self.checkdigit(isbn)
+      return false unless isbn[-1..-1] == self.checkdigit(isbn, true)
+      return true
     end
   
+    
+    # For an ISBN normalizing it is the same as converting to ISBN 13
+    # and making sure it's valid
+    # @param [String] isbn The ISBN to normalize
+    # @param [Boolean] passthrough On failure, return the original passed-in value instead of nil
+    # @return [String, nil] the normalized (to 13 digit) ISBN, or nil on failure
+    def self.normalize rawisbn
+      isbn = convert_to_13 rawisbn
+      if isbn and valid?(isbn, true)
+        return isbn
+      else
+        return nil
+      end
+    end
+      
     # To convert to an ISBN13, throw a '978' on the front and 
     # compute the checkdigit
-    # We leave 13-digit numbers alone, figuring they're already ok,
+    # We leave 13-digit numbers alone, figuring they're already ok. NO CHECKSUM CHECK IS DONE FOR 13-DIGIT ISBNS!
     # and return nil on anything that's not the right length
     # @param [String] isbn The ISBN (we'll try to clean it up if possible)
-    # @return [String] The converted 13-character ISBN, nil if something looks wrong, or whatever was passed in if it already looked like a 13-digit ISBN
+    # @return [String, nil] The converted 13-character ISBN, nil if something looks wrong, or whatever was passed in if it already looked like a 13-digit ISBN
     def self.convert_to_13 isbn
-      isbn = StdNum.extractNumber isbn
+      isbn = reduce_to_basics isbn, [10,13]
       return nil unless isbn
-      size = isbn.size
-      return isbn if size == 13
-      return nil unless size == 10
-    
+      return isbn if isbn.size == 13
       prefix = '978' + isbn[0..8]
-      return prefix + self.checkdigit(prefix + '0')
+      return prefix + self.checkdigit(prefix + '0', true)
     end
-    
-    
+
+
     # Convert to 10 if it's 13 digits and the first three digits are 978.
     # Pass through anything 10-digits, and return nil for everything else.
     # @param [String] isbn The ISBN (we'll try to clean it up if possible)
     # @return [String] The converted 10-character ISBN, nil if something looks wrong, or whatever was passed in if it already looked like a 10-digit ISBN
     def self.convert_to_10 isbn
-      isbn = StdNum.extractNumber isbn
-      return nil unless isbn
-      size = isbn.size
-      return isbn if size == 10
-      return nil unless size == 13
+      isbn = reduce_to_basics isbn, [10,13]
+
+      # Already 10 digits? Just return
+      return isbn if isbn.size == 10
+      
+      # Can't be converted to ISBN-10? Bail
       return nil unless isbn[0..2] == '978'
       
       prefix = isbn[3..11]
       return prefix + self.checkdigit(prefix + '0')
     end
     
-    # Return an array of the ISBN10 and ISBN13 for the passed in value. You'll
+    # Return an array of the ISBN13 and ISBN10 (in that order) for the passed in value. You'll
     # only get one value back if it's a 13-digit
     # ISBN that can't be converted to an ISBN10.
     # @param [String] isbn The original ISBN, in 10-character or 13-digit format
-    # @return [Array] Either the (one or two) normalized ISBNs, or an empty array if
+    # @return [Array<String,String>, nil] Either the (one or two) normalized ISBNs, or nil if
     # it can't be recognized.
+    #
+    # @example Get the normalized values and index them (if valid) or original value (if not)
+    #   norms = StdNum::ISBN.allNormalizedValues(rawisbn)
+    #   doc['isbn'] = norms ? norms : [rawisbn]
+    
     
     def self.allNormalizedValues isbn
-      isbn = StdNum.extractNumber isbn
+      isbn = reduce_to_basics isbn, [10,13]
       return [] unless isbn
       case isbn.size
       when 10
-        return [isbn, self.convert_to_13(isbn)]
+        return [self.convert_to_13(isbn), isbn]
       when 13
         return [isbn, self.convert_to_10(isbn)].compact
-      else
-        return []
       end
     end
     
@@ -114,13 +154,17 @@ module StdNum
   end
   
   module ISSN
+    extend Helpers
     
     # Compute the checkdigit of an ISSN
     # @param [String] issn The ISSN (we'll try to clean it up if possible)
+    # @param [Boolean] preprocessed Set to true if the number has already been through reduce_to_basic    
     # @return [String] the one-character checkdigit
-    def self.checkdigit issn
-      issn = StdNum.extractNumber issn
-      return nil unless issn and issn.size == 8
+    
+    def self.checkdigit issn, preprocessed = false
+      issn = reduce_to_basics issn, 8 unless preprocessed
+      return nil unless issn
+
       digits = issn[0..6].split(//).map {|i| i.to_i}
       checkdigit = 0
       (0..6).each do |i|
@@ -135,32 +179,93 @@ module StdNum
     
     # Check to see if the checkdigit is correct
     # @param [String] isbn The ISSN (we'll try to clean it up if possible)
+    # @param [Boolean] preprocessed Set to true if the number has already been through reduce_to_basic        
     # @return [Boolean] Whether or not the checkdigit is correct
-    def self.valid? issn
-      issn = StdNum.extractNumber issn
+
+    def self.valid? issn, preprocessed = false
+      issn = reduce_to_basics issn, 8 unless preprocessed
       return false unless issn
-      size = issn.size
-      return false unless (size == 8)
-      return issn[-1..-1] == self.checkdigit(issn)
+      return issn[-1..-1] == self.checkdigit(issn, true)
     end
+    
+    def self.normalize rawissn
+      issn = reduce_to_basics rawissn, 8
+      if issn and valid?(issn, true)
+        return issn
+      else
+        return nil
+      end
+    end
+      
     
     
   end
   
   module LCCN
+    
+    # The rules for validity according to http://www.loc.gov/marc/lccn-namespace.html#syntax:
+    #
+    # A normalized LCCN is a character string eight to twelve characters in length. (For purposes of this description characters are ordered from left to right -- "first" means "leftmost".)
+    # The rightmost eight characters are always digits. 
+    # If the length is 9, then the first character must be alphabetic.
+    # If the length is 10, then the first two characters must be either both digits or both alphabetic.
+    # If the length is 11, then the first character must be alphabetic and the next two characters must be either both digits or both alphabetic.
+    # If the length is 12, then the first two characters must be alphabetic and the remaining characters digits.
+    #
+    # @param [String] lccn The lccn to attempt to validate
+    # @param [Boolean] preprocessed Set to true if the number has already been normalized   
+    # @return [Boolean] Whether or not the syntax seems ok
+
+    def self.reduce_to_basic str
+      str.gsub!(/\s/, '') # ditch leading spaces
+      str.gsub!(/\/.*$/, '') # ditch everything after the first '/' (including the slash)
+      return str
+    end
+      
+
+    def self.valid? lccn, preprocessed = false
+      lccn = normalize(lccn) unless preprocessed
+      return false unless (8..12).include? lccn.size
+      clean = lccn.gsub(/\-/, '')
+      suffix = clean[-8..-1]
+      prefix = clean[0..-9]
+      return false unless suffix =~ /^\d+$/
+      case clean.size
+      when 8
+        return true
+      when 9
+        return true if prefix =~ /[A-Za-z]/
+      when 10
+        return true if prefix =~ /\d{2}/ or prefix =~ /[A-Za-z]{2}/
+      when 11
+        return true if prefix =~ /[A-Za-z](\d{2}|[A-Za-z]{2})/
+      when 12
+        return true if prefix =~ /[A-Za-z]{2}\d{2}/
+      else
+        return false
+      end
+    end
+
+    
+    
     # Normalize based on data at http://www.loc.gov/marc/lccn-namespace.html#syntax
     # @param [String] str The LCCN to normalize
     # @return [String] the normalized LCCN, or nil if it looks malformed
-    def self.normalize str
-      str.gsub!(/\s/, '')
-      str.gsub!(/\/.*$/, '')
-      if str =~ /^(.*?)\-(.+)/
+    def self.normalize rawlccn
+      lccn = reduce_to_basic(rawlccn)      
+      # If there's a dash in it, deal with that.
+      if lccn =~ /^(.*?)\-(.+)/
         pre =  $1
         post = $2
         return nil unless post =~ /^\d+$/ # must be all digits
-        return "%s%06d" % [pre, post.to_i]
+        lccn = "%s%06d" % [pre, post.to_i]
       end
-      return str
+      
+      if valid?(lccn, true)
+        return lccn
+      else
+        return nil
+      end
     end
   end  
   

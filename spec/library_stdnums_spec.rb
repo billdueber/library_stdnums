@@ -2,31 +2,31 @@ require 'spec_helper'
 
 describe "Extract" do
   it "should leave a number alone" do
-    StdNum.extractNumber('123456').should.equal '123456'
+    StdNum::ISBN.extractNumber('123456').should.equal '123456'
   end
   
   it "should skip leading and trailing crap" do
-    StdNum.extractNumber(' 12345 (online)').should.equal '12345'
+    StdNum::ISBN.extractNumber(' 12345 (online)').should.equal '12345'
   end
   
   it "should allow hyphens" do
-    StdNum.extractNumber(' 1-234-5').should.equal '12345'
+    StdNum::ISBN.extractNumber(' 1-234-5').should.equal '12345'
   end
   
   it "should return nil on a non-match" do
-    StdNum.extractNumber('bill dueber').should.equal nil
+    StdNum::ISBN.extractNumber('bill dueber').should.equal nil
   end
   
   it "should allow a trailing X" do 
-    StdNum.extractNumber('1-234-5-X').should.equal '12345X'
+    StdNum::ISBN.extractNumber('1-234-5-X').should.equal '12345X'
   end
   
   it "should upcase any trailing X" do
-    StdNum.extractNumber('1-234-x').should.equal '1234X'
+    StdNum::ISBN.extractNumber('1-234-x').should.equal '1234X'
   end
   
   it "only allows a single trailing X" do
-    StdNum.extractNumber('1234-X-X').should.equal '1234X'
+    StdNum::ISBN.extractNumber('1234-X-X').should.equal '1234X'
   end
   
 end
@@ -92,6 +92,10 @@ describe 'ISSN' do
   it "computes checksum" do 
     StdNum::ISSN.checkdigit('0378-5955').should.equal '5'
   end
+  
+  it "normalizes" do
+    StdNum::ISSN.normalize('0378-5955').should.equal '03785955'
+  end
 end
 
 
@@ -106,7 +110,7 @@ describe 'LCCN' do
     "85-2 " => "85000002",
     "2001-000002" => "2001000002",
     "75-425165//r75" => "75425165",
-    " 79139101 /AC/r932" => "79139101"
+    " 79139101 /AC/r932" => "79139101",    
   }
   
   test.each do |k, v|
