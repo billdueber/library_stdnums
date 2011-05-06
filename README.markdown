@@ -9,40 +9,41 @@ See the actual functions for more information than what's below.
 ## ISBN
 
 ````ruby
-  isbn = StdNum::ISBN.normalize(goodISBN)
-    # => a 13-digit ISBN with no dashes/spaces
+
+      isbn = StdNum::ISBN.normalize(goodISBN)
+        # => a 13-digit ISBN with no dashes/spaces
     
-  isbn = StdNum::ISBN.normalize(badISBN)
-    # => nil (if it's not an ISBN or the checkdigit is bad)
+      isbn = StdNum::ISBN.normalize(badISBN)
+        # => nil (if it's not an ISBN or the checkdigit is bad)
   
-  tenDigit = StdNum::ISBN.convert_to_10(isbn13)
-  thirteenDigit = StdNum::ISBN.convert_to_13(isbn10)
+      tenDigit = StdNum::ISBN.convert_to_10(isbn13)
+      thirteenDigit = StdNum::ISBN.convert_to_13(isbn10)
   
-  thirteenDigit,tenDigit = StdNum::ISBN.allNormalizedValues(issn)
-    # => array of the ten and thirteen digit isbns if valid; 
-    #    an empty array if not
+      thirteenDigit,tenDigit = StdNum::ISBN.allNormalizedValues(issn)
+        # => array of the ten and thirteen digit isbns if valid; 
+        #    an empty array if not
   
-  digit = StdNum::ISBN.checkdigit(isbn)
-    # => 0..9 (for isbn13) or 0..9,X (for isbn10)
+      digit = StdNum::ISBN.checkdigit(isbn)
+        # => 0..9 (for isbn13) or 0..9,X (for isbn10)
   
-  if StdNum::ISBN.valid?(isbn)
-    puts "#{isbn} has a valid checkdigit"
-  end
+      if StdNum::ISBN.valid?(isbn)
+        puts "#{isbn} has a valid checkdigit"
+      end
   
 ````
 
 # ISSN
 
 ````ruby
-  issn = StdNum::ISSN.normalize(issn)
-  #  => the cleaned-up issn if valid; nil if not
+      issn = StdNum::ISSN.normalize(issn)
+      #  => the cleaned-up issn if valid; nil if not
   
-  digit = StdNum::ISSN.checkdigit(issn)
-  #  => 0..9 or X
+      digit = StdNum::ISSN.checkdigit(issn)
+      #  => 0..9 or X
 
-  if StdNum::ISSN.valid?(issn)
-    puts "#{issn} has a valid checkdigit"
-  end
+      if StdNum::ISSN.valid?(issn)
+        puts "#{issn} has a valid checkdigit"
+      end
 ````
   
 # LCCN
@@ -51,15 +52,16 @@ LCCNs are normalized according to the algorithm at http://www.loc.gov/marc/lccn-
 
 ````ruby
 
-  lccn = StdNum::LCCN.normalize(rawlccn)
-  #  => either the normalized lccn, or nil if it has bad syntax
-  
-  if StdNum::LCCN.valid?(rawlccn) {
-    puts "#{rawlccn} is valid"
-  }
+      lccn = StdNum::LCCN.normalize(rawlccn)
+      #  => either the normalized lccn, or nil if it has bad syntax
+
+      if StdNum::LCCN.valid?(rawlccn) {
+        puts "#{rawlccn} is valid"
+      }
+
 ````
 
-== CHANGES
+## CHANGES
 
 * 1.0.0
   * Added normalization all around. 
@@ -77,7 +79,7 @@ LCCNs are normalized according to the algorithm at http://www.loc.gov/marc/lccn-
 * 0.1.0 
   * Initial release
 
-== Note on Patches/Pull Requests
+## Note on Patches/Pull Requests
  
 * Fork the project.
 * Make your feature addition or bug fix.
@@ -87,6 +89,6 @@ LCCNs are normalized according to the algorithm at http://www.loc.gov/marc/lccn-
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
-== Copyright
+## Copyright
 
-Copyright (c) 2010 Bill Dueber. See LICENSE for details.
+Copyright (c) 2010, 2011 Bill Dueber. See LICENSE for details.

@@ -1,17 +1,29 @@
+# Static Module functions to work with library "standard numbers" ISSN, ISBN, and LCCN
 module StdNum
-    
+  
+  # Helper methods common to ISBN/ISSN
   module Helpers
     
+    # The pattern we use to try and find an ISBN/ISSN. Ditch everthing before the first
+    # digit, then take all the digits/hyphens, optionally followed by an 'X'
     STDNUMPAT = /^.*?(\d[\d\-]+[xX]?)/
 
     # Extract the most likely looking number from the string. This will be the first
     # string of digits-and-hyphens-and-maybe-a-trailing-X, with the hypens removed
+    # @param [String] str The string from which to extract an ISBN/ISSN
+    # @return [String] The extracted identifier
     def extractNumber str
       match = STDNUMPAT.match str
       return nil unless match
       return match[1].gsub(/\-/, '').upcase
     end
     
+    # Given any string, extract what looks like the most likely ISBN/ISSN
+    # of the given size(s), or nil if nothing matches at the correct size.
+    # @param [String] rawnum The raw string containing (hopefully) an ISSN/ISBN
+    # @param [Integer, Array<Integer>, nil] An integer or array of integers of valid sizes
+    # for this type (e.g., 10 or 13 for ISBN, 8 for ISSN)
+    # @return [String,nil] the reduced and verified number, or nil if there's no match at the right size
     def reduce_to_basics rawnum, valid_sizes = nil
       return nil if rawnum.nil?
       
@@ -33,7 +45,7 @@ module StdNum
     end
   end
     
-
+  # Validate, convert, and normalize ISBNs (10-digit or 13-digit)
   module ISBN
     extend Helpers
   
@@ -84,7 +96,6 @@ module StdNum
     # For an ISBN normalizing it is the same as converting to ISBN 13
     # and making sure it's valid
     # @param [String] isbn The ISBN to normalize
-    # @param [Boolean] passthrough On failure, return the original passed-in value instead of nil
     # @return [String, nil] the normalized (to 13 digit) ISBN, or nil on failure
     def self.normalize rawisbn
       isbn = convert_to_13 rawisbn
@@ -137,8 +148,6 @@ module StdNum
     # @example Get the normalized values and index them (if valid) or original value (if not)
     #   norms = StdNum::ISBN.allNormalizedValues(rawisbn)
     #   doc['isbn'] = norms ? norms : [rawisbn]
-    
-    
     def self.allNormalizedValues isbn
       isbn = reduce_to_basics isbn, [10,13]
       return [] unless isbn
@@ -153,6 +162,7 @@ module StdNum
     
   end
   
+  # Validate and and normalize ISSNs
   module ISSN
     extend Helpers
     
@@ -188,6 +198,11 @@ module StdNum
       return issn[-1..-1] == self.checkdigit(issn, true)
     end
     
+    
+    
+    # Make sure it's valid, remove the dashes, uppercase the X, and return
+    # @param [String] isbn The ISBN to normalize
+    # @return [String, nil] the normalized (to 13 digit) ISBN, or nil on failure
     def self.normalize rawissn
       issn = reduce_to_basics rawissn, 8
       if issn and valid?(issn, true)
@@ -201,6 +216,7 @@ module StdNum
     
   end
   
+  # Validate and and normalize LCCNs
   module LCCN
     
     # The rules for validity according to http://www.loc.gov/marc/lccn-namespace.html#syntax:
