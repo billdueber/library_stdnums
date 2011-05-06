@@ -10,7 +10,7 @@ begin
     gem.email = "bill@dueber.com"
     gem.homepage = "http://github.com/billdueber/library_stdnums"
     gem.authors = ["Bill Dueber"]
-    gem.add_development_dependency "bacon", ">= 0"
+    gem.add_development_dependency "minitest", ">= 0" if RUBY_VERSION < "1.9"
     gem.add_development_dependency "yard", ">= 0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
