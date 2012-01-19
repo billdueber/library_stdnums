@@ -2,9 +2,10 @@
 
 These are a set of Module functions (not classes with methods!) that perform simple checksum verification and (when applicable) normalization on strings containing common library types (currently just ISBN, ISSN, and LCCN).
 
-The code allows for some minimal crap (e.g., '1234-4568 online') will work fine. All returned ISBN/ISSN values are devoid any dashes; any trailing X for an ISBN/ISSN checkdigit will be uppercase *and will always be returned as a one-digit string*. 
+The code allows for some minimal crap to be in the passed string (e.g., '1234-4568 online' will work fine). All returned ISBN/ISSN values are devoid any dashes; any trailing X for an ISBN/ISSN checkdigit will be uppercase.
 
-See the actual functions for more information than what's below.
+When you're getting back just the checkdigit, it will *always be returned as a one-digit string or an uppercase X* ('1'..'9' or 'X'). 
+
 
 ## ISBN
 
@@ -24,7 +25,7 @@ See the actual functions for more information than what's below.
         #    an empty array if not
   
       digit = StdNum::ISBN.checkdigit(isbn)
-        # => 0..9 (for isbn13) or 0..9,X (for isbn10)
+        # => '0'..'9' (for isbn13) or '0'..'9','X' (for isbn10)
   
       if StdNum::ISBN.valid?(isbn)
         puts "#{isbn} has a valid checkdigit"
@@ -39,7 +40,7 @@ See the actual functions for more information than what's below.
       #  => the cleaned-up issn if valid; nil if not
   
       digit = StdNum::ISSN.checkdigit(issn)
-      #  => 0..9 or X
+      #  => '0'..'9' or 'X'
 
       if StdNum::ISSN.valid?(issn)
         puts "#{issn} has a valid checkdigit"
