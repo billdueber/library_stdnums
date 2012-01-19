@@ -63,7 +63,8 @@ LCCNs are normalized according to the algorithm at http://www.loc.gov/marc/lccn-
 ````
 
 ## CHANGES
-
+* 1.0.2
+  * Made docs clearer.
 * 1.0.0
   * Added normalization all around. 
   * Added valid? for LCCN. 
