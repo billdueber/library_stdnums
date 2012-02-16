@@ -222,54 +222,20 @@ module StdNum
   # Validate and and normalize LCCNs
   module LCCN
 
-    # The rules for validity according to http://www.loc.gov/marc/lccn-namespace.html#syntax:
-    #
-    # A normalized LCCN is a character string eight to twelve characters in length. (For purposes of this description characters are ordered from left to right -- "first" means "leftmost".)
-    # The rightmost eight characters are always digits.
-    # If the length is 9, then the first character must be alphabetic.
-    # If the length is 10, then the first two characters must be either both digits or both alphabetic.
-    # If the length is 11, then the first character must be alphabetic and the next two characters must be either both digits or both alphabetic.
-    # If the length is 12, then the first two characters must be alphabetic and the remaining characters digits.
-    #
-    # @param [String] lccn The lccn to attempt to validate
-    # @param [Boolean] preprocessed Set to true if the number has already been normalized
-    # @return [Boolean] Whether or not the syntax seems ok
+
+    # Get a string ready for processing as an LCCN
+    # @param [String] str The possible lccn
+    # @return [String] The munged string, ready for normalization
 
     def self.reduce_to_basic str
-      str.gsub!(/\s/, '') # ditch leading spaces
-      str.gsub!(/\/.*$/, '') # ditch everything after the first '/' (including the slash)
-      return str
+      rv = str.gsub(/\s/, '')  # ditch spaces
+      rv.gsub!(/\/.*$/, '') # ditch everything after the first '/' (including the slash)
+      return rv
     end
-
-
-    def self.valid? lccn, preprocessed = false
-      lccn = normalize(lccn) unless preprocessed
-      return false unless (8..12).include? lccn.size
-      clean = lccn.gsub(/\-/, '')
-      suffix = clean[-8..-1]
-      prefix = clean[0..-9]
-      return false unless suffix =~ /^\d+$/
-      case clean.size
-      when 8
-        return true
-      when 9
-        return true if prefix =~ /^[A-Za-z]/
-      when 10
-        return true if prefix =~ /^\d{2}/ or prefix =~ /^[A-Za-z]{2}/
-      when 11
-        return true if prefix =~ /^[A-Za-z](\d{2}|[A-Za-z]{2})/
-      when 12
-        return true if prefix =~ /^[A-Za-z]{2}\d{2}/
-      else
-        return false
-      end
-    end
-
-
 
     # Normalize based on data at http://www.loc.gov/marc/lccn-namespace.html#syntax
-    # @param [String] str The LCCN to normalize
-    # @return [String] the normalized LCCN, or nil if it looks malformed
+    # @param [String] str The possible LCCN to normalize
+    # @return [String, nil] the normalized LCCN, or nil if it looks malformed
     def self.normalize rawlccn
       lccn = reduce_to_basic(rawlccn)
       # If there's a dash in it, deal with that.
@@ -286,8 +252,42 @@ module StdNum
         return nil
       end
     end
-  end
 
+    # The rules for validity according to http://www.loc.gov/marc/lccn-namespace.html#syntax:
+    #
+    # A normalized LCCN is a character string eight to twelve characters in length. (For purposes of this description characters are ordered from left to right -- "first" means "leftmost".)
+    # The rightmost eight characters are always digits.
+    # If the length is 9, then the first character must be alphabetic.
+    # If the length is 10, then the first two characters must be either both digits or both alphabetic.
+    # If the length is 11, then the first character must be alphabetic and the next two characters must be either both digits or both alphabetic.
+    # If the length is 12, then the first two characters must be alphabetic and the remaining characters digits.
+    #
+    # @param [String] lccn The lccn to attempt to validate
+    # @param [Boolean] preprocessed Set to true if the number has already been normalized
+    # @return [Boolean] Whether or not the syntax seems ok
+
+    def self.valid? lccn, preprocessed = false
+      lccn = normalize(lccn) unless preprocessed
+      clean = lccn.gsub(/\-/, '')
+      suffix = clean[-8..-1] # "the rightmost eight characters are always digits"
+      return false unless suffix and suffix =~ /^\d+$/
+      case clean.size # "...is a character string eight to twelve digits in length"
+      when 8
+        return true
+      when 9
+        return true if clean =~ /^[A-Za-z]/
+      when 10
+        return true if clean =~ /^\d{2}/ or clean =~ /^[A-Za-z]{2}/
+      when 11
+        return true if clean =~ /^[A-Za-z](\d{2}|[A-Za-z]{2})/
+      when 12
+        return true if clean =~ /^[A-Za-z]{2}\d{2}/
+      else
+        return false
+      end
+    end
+
+  end
 
 end
 
