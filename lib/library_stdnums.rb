@@ -253,13 +253,13 @@ module StdNum
       when 8
         return true
       when 9
-        return true if prefix =~ /[A-Za-z]/
+        return true if prefix =~ /^[A-Za-z]/
       when 10
-        return true if prefix =~ /\d{2}/ or prefix =~ /[A-Za-z]{2}/
+        return true if prefix =~ /^\d{2}/ or prefix =~ /^[A-Za-z]{2}/
       when 11
-        return true if prefix =~ /[A-Za-z](\d{2}|[A-Za-z]{2})/
+        return true if prefix =~ /^[A-Za-z](\d{2}|[A-Za-z]{2})/
       when 12
-        return true if prefix =~ /[A-Za-z]{2}\d{2}/
+        return true if prefix =~ /^[A-Za-z]{2}\d{2}/
       else
         return false
       end
