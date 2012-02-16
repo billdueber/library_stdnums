@@ -63,6 +63,8 @@ LCCNs are normalized according to the algorithm at http://www.loc.gov/marc/lccn-
 ````
 
 ## CHANGES
+* 1.1.0
+  * Changed the ISBN/ISSN regex to make sure string of digits/dashes is at least 6 chars long
 * 1.0.2
   * Made docs clearer.
 * 1.0.0
