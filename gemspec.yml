@@ -1,0 +1,11 @@
+name: library_stdnums
+summary: "TODO: Summary"
+description: "TODO: Description"
+license: MIT
+authors: Bill Dueber
+email: bill@dueber.com
+homepage: https://github.com/billdueber/library_stdnums#readme
+
+development_dependencies:
+  bundler: ~> 1.0
+  yard: ~> 0.7
