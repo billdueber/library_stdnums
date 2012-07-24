@@ -229,6 +229,7 @@ module StdNum
 
     def self.reduce_to_basic str
       rv = str.gsub(/\s/, '')  # ditch spaces
+      rv.gsub!('http://lccn.loc.gov/', '') # remove URI prefix
       rv.gsub!(/\/.*$/, '') # ditch everything after the first '/' (including the slash)
       return rv
     end
@@ -285,10 +286,11 @@ module StdNum
       else
         return false
       end
+
+      return false
     end
 
   end
 
 end
 
-    
