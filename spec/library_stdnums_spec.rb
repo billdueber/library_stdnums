@@ -136,6 +136,15 @@ describe 'LCCN basics' do
       StdNum::LCCN.normalize(k.dup).must_equal v
     end
   end
+
+  it "validates correctly" do
+    StdNum::LCCN.valid?("n78-890351").must_equal true
+    StdNum::LCCN.valid?("na78-890351").must_equal false
+    StdNum::LCCN.valid?("naa78-890351").must_equal false
+    StdNum::LCCN.valid?("n78-89c0351").must_equal false
+  end
+
+
 end
 
 
