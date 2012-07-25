@@ -139,9 +139,10 @@ describe 'LCCN basics' do
 
   it "validates correctly" do
     StdNum::LCCN.valid?("n78-890351").must_equal true
-    StdNum::LCCN.valid?("na78-890351").must_equal false
-    StdNum::LCCN.valid?("naa78-890351").must_equal false
-    StdNum::LCCN.valid?("n78-89c0351").must_equal false
+    StdNum::LCCN.valid?("n078-890351").must_equal false, "n078-890351 should start with two letters or two digits"
+    StdNum::LCCN.valid?("na078-890351").must_equal false, "naa78-890351 should start with three letters or digits"
+    StdNum::LCCN.valid?("0an78-890351").must_equal false, "naa78-890351 should start with three letters or digits"
+    StdNum::LCCN.valid?("n78-89c0351").must_equal false, "n78-89c0351 has a letter after the dash"
   end
 
 
