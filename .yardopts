@@ -1,0 +1,8 @@
+--protected
+--no-private
+--embed-mixin ClassMethods
+--markup=markdown
+-
+README.md
+ChangeLog.md
+LICENSE.txt
