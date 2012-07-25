@@ -271,6 +271,7 @@ module StdNum
 
     def self.valid? lccn, preprocessed = false
       lccn = normalize(lccn) unless preprocessed
+      return false unless lccn
       clean = lccn.gsub(/\-/, '')
       suffix = clean[-8..-1] # "the rightmost eight characters are always digits"
       return false unless suffix and suffix =~ /^\d+$/
