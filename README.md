@@ -1,5 +1,7 @@
 # library_stdnums -- simple functions to check and normalize ISSN/ISBN/LCCN
 
+[![Build Status](https://secure.travis-ci.org/[billdueber]/[library_stdnums].png)](http://travis-ci.org/[billdueber]/[library_stdnums])
+
 These are a set of Module functions (not classes with methods!) that perform simple checksum verification and (when applicable) normalization on strings containing common library types (currently just ISBN, ISSN, and LCCN).
 
 The code allows for some minimal crap to be in the passed string (e.g., '1234-4568 online' will work fine). All returned ISBN/ISSN values are devoid any dashes; any trailing X for an ISBN/ISSN checkdigit will be uppercase.
