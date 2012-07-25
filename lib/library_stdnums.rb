@@ -9,7 +9,7 @@ module StdNum
     # Since the shortest possible string is 7 digits followed by a checksum digit
     # for an ISSN, we'll make sure they're at least that long. Still imperfect
     # (would fine "5------", for example) but should work in most cases.
-    STDNUMPAT = /^.*?(\d[\d\-]{6,}+[xX]?)/
+    STDNUMPAT = /^.*?(\d[\d\-]{6,}[xX]?)/
 
     # Extract the most likely looking number from the string. This will be the first
     # string of digits-and-hyphens-and-maybe-a-trailing-X, with the hypens removed
@@ -18,7 +18,7 @@ module StdNum
     def extractNumber str
       match = STDNUMPAT.match str
       return nil unless match
-      return match[1].gsub(/\-/, '').upcase
+      return (match[1].gsub(/\-/, '')).upcase
     end
 
     # Given any string, extract what looks like the most likely ISBN/ISSN
