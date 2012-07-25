@@ -1,6 +1,6 @@
 # library_stdnums -- simple functions to check and normalize ISSN/ISBN/LCCN
 
-[![Build Status](https://secure.travis-ci.org/[billdueber]/[library_stdnums].png)](http://travis-ci.org/[billdueber]/[library_stdnums])
+[![Build Status](https://secure.travis-ci.org/billdueber/library_stdnums.png)](http://travis-ci.org/billdueber/library_stdnums)
 
 These are a set of Module functions (not classes with methods!) that perform simple checksum verification and (when applicable) normalization on strings containing common library types (currently just ISBN, ISSN, and LCCN).
 
