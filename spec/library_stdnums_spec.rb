@@ -85,6 +85,13 @@ describe "ISBN" do
     StdNum::ISBN.convert_to_10('978-0-306-40615-7').must_equal '0306406152'
   end
 
+  it "normalizes" do
+    StdNum::ISBN.normalize('0-306-40615-2').must_equal '9780306406157'
+    StdNum::ISBN.normalize('0-306-40615-X').must_equal nil
+    StdNum::ISBN.normalize('ISBN: 978-0-306-40615-7').must_equal '9780306406157'
+    StdNum::ISBN.normalize('ISBN: 978-0-306-40615-3').must_equal nil
+  end
+
   it "gets both normalized values" do
     a = StdNum::ISBN.allNormalizedValues('978-0-306-40615-7')
     a.sort.must_equal ['9780306406157', '0306406152' ].sort

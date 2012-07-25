@@ -24,7 +24,7 @@ module StdNum
     # Given any string, extract what looks like the most likely ISBN/ISSN
     # of the given size(s), or nil if nothing matches at the correct size.
     # @param [String] rawnum The raw string containing (hopefully) an ISSN/ISBN
-    # @param [Integer, Array<Integer>, nil] An integer or array of integers of valid sizes
+    # @param [Integer, Array<Integer>, nil] valid_sizes An integer or array of integers of valid sizes
     # for this type (e.g., 10 or 13 for ISBN, 8 for ISSN)
     # @return [String,nil] the reduced and verified number, or nil if there's no match at the right size
     def reduce_to_basics rawnum, valid_sizes = nil
@@ -96,13 +96,14 @@ module StdNum
     end
 
 
-    # For an ISBN normalizing it is the same as converting to ISBN 13
+    # For an ISBN, normalizing it is the same as converting to ISBN 13
     # and making sure it's valid
-    # @param [String] isbn The ISBN to normalize
+    #
+    # @param [String] rawisbn The ISBN to normalize
     # @return [String, nil] the normalized (to 13 digit) ISBN, or nil on failure
     def self.normalize rawisbn
       isbn = convert_to_13 rawisbn
-      if isbn and valid?(isbn, true)
+      if isbn
         return isbn
       else
         return nil
@@ -118,6 +119,7 @@ module StdNum
     def self.convert_to_13 isbn
       isbn = reduce_to_basics isbn, [10,13]
       return nil unless isbn
+      return nil unless valid?(isbn, true)
       return isbn if isbn.size == 13
       prefix = '978' + isbn[0..8]
       return prefix + self.checkdigit(prefix + '0', true)
@@ -191,7 +193,7 @@ module StdNum
     end
 
     # Check to see if the checkdigit is correct
-    # @param [String] isbn The ISSN (we'll try to clean it up if possible)
+    # @param [String] issn The ISSN (we'll try to clean it up if possible)
     # @param [Boolean] preprocessed Set to true if the number has already been through reduce_to_basic
     # @return [Boolean] Whether or not the checkdigit is correct
 
@@ -204,8 +206,8 @@ module StdNum
 
 
     # Make sure it's valid, remove the dashes, uppercase the X, and return
-    # @param [String] isbn The ISBN to normalize
-    # @return [String, nil] the normalized (to 13 digit) ISBN, or nil on failure
+    # @param [String] rawissn The ISSN to normalize
+    # @return [String, nil] the normalized ISSN, or nil on failure
     def self.normalize rawissn
       issn = reduce_to_basics rawissn, 8
       if issn and valid?(issn, true)
@@ -235,7 +237,7 @@ module StdNum
     end
 
     # Normalize based on data at http://www.loc.gov/marc/lccn-namespace.html#syntax
-    # @param [String] str The possible LCCN to normalize
+    # @param [String] rawlccn The possible LCCN to normalize
     # @return [String, nil] the normalized LCCN, or nil if it looks malformed
     def self.normalize rawlccn
       lccn = reduce_to_basic(rawlccn)
