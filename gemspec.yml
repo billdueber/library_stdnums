@@ -1,10 +1,10 @@
 name: library_stdnums
-summary: "TODO: Summary"
-description: "TODO: Description"
+summary: "Normalize and validate ISBN / ISSN/ LCCN"
+description: "A simple set of module functions to normalize, validate, and convert common library standard numbers"
 license: MIT
 authors: Bill Dueber
 email: bill@dueber.com
-homepage: https://github.com/billdueber/library_stdnums#readme
+homepage: https://github.com/billdueber/library_stdnums
 
 development_dependencies:
   bundler: ~> 1.0
