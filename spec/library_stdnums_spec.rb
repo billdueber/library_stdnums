@@ -95,6 +95,9 @@ describe "ISBN" do
   it "gets both normalized values" do
     a = StdNum::ISBN.allNormalizedValues('978-0-306-40615-7')
     a.sort.must_equal ['9780306406157', '0306406152' ].sort
+
+    a = StdNum::ISBN.allNormalizedValues('0-306-40615-2')
+    a.sort.must_equal ['9780306406157', '0306406152' ].sort
   end
 
 
