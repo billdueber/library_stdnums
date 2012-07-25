@@ -1,7 +1,9 @@
 * 1.2.0 (2012.07.24)
   * Added a bunch of tests for LCCN normalization from perl module Business::LCCN
     (http://search.cpan.org/~anirvan/Business-LCCN/)
+  * Fix ISBN.normalize to fail if an invalid 10-digit ISBN in passed in
   * Added ablility to normalize/validate LCCN URIs (e.g., http://lccn.loc.gov/abc89001234)
+  * Test give 100% code coverage! Yea!
 * 1.1.0 (2012.02.06)
   * Changed the ISBN/ISSN regex to make sure string of digits/dashes is at least 6 chars long
   * Cleaned up LCCN validation code

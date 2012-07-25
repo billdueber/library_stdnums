@@ -9,6 +9,9 @@ When you're getting back just the checkdigit, it will *always be returned as a o
 
 ## ISBN
 
+We can deal with 10 or 13-digit ISBNs and convert between the two (when applicable).
+"Normalization" means converting to 13-digit string and then validating.
+
 ````ruby
 
       isbn = StdNum::ISBN.normalize(goodISBN)
@@ -24,10 +27,13 @@ When you're getting back just the checkdigit, it will *always be returned as a o
         # => array of the ten and thirteen digit isbns if valid;
         #    an empty array if not
 
-      digit = StdNum::ISBN.checkdigit(isbn)
+      digit = StdNum::ISBN.checkdigit(rawisbn)
         # => '0'..'9' (for isbn13) or '0'..'9','X' (for isbn10)
 
-      if StdNum::ISBN.valid?(isbn)
+      digit = StdNum::ISBN.checkdigit(StdNum::ISBN.normalize(rawisbn))
+        # => '0'..'9', the checkdigit of the 13-digit ISBN
+
+      if StdNum::ISBN.valid?(rawisbn)
         puts "#{isbn} has a valid checkdigit"
       end
 
@@ -35,30 +41,42 @@ When you're getting back just the checkdigit, it will *always be returned as a o
 
 # ISSN
 
+For an ISSN, normalization simply cleans up any extraneous characters,
+uppercases the final 'X' if need be, validates, and returns.
+
 ````ruby
-      issn = StdNum::ISSN.normalize(issn)
+
+      issn = StdNum::ISSN.normalize(rawissn)
       #  => the cleaned-up issn if valid; nil if not
 
-      digit = StdNum::ISSN.checkdigit(issn)
+      digit = StdNum::ISSN.checkdigit(rawissn)
       #  => '0'..'9' or 'X'
 
-      if StdNum::ISSN.valid?(issn)
+      if StdNum::ISSN.valid?(rawissn)
         puts "#{issn} has a valid checkdigit"
       end
 ````
 
 # LCCN
 
-LCCNs are normalized according to the algorithm at http://www.loc.gov/marc/lccn-namespace.html#syntax
+LCCNs are normalized according to the algorithm at
+http://www.loc.gov/marc/lccn-namespace.html#syntax . Normalization involves
+that full process; validation includes checks on the syntax only since
+there's no checkdigit.
+
+rawlccn may be a standalone LCCN as found in a record, or a URI of the form
+'http://lccn.loc.gov/89001234 .
 
 ````ruby
 
-      lccn = StdNum::LCCN.normalize(rawlccn)
-      #  => either the normalized lccn, or nil if it has bad syntax
 
-      if StdNum::LCCN.valid?(rawlccn) {
-        puts "#{rawlccn} is valid"
-      }
+    lccn = StdNum::LCCN.normalize(rawlccn)
+    #  => either the normalized lccn, or nil if it has bad syntax
+
+    if StdNum::LCCN.valid?(rawlccn) {
+      puts "#{rawlccn} is valid"
+    }
+
 
 ````
 
