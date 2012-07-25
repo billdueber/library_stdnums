@@ -12,7 +12,7 @@ When you're getting back just the checkdigit, it will *always be returned as a o
 We can deal with 10 or 13-digit ISBNs and convert between the two (when applicable).
 "Normalization" means converting to 13-digit string and then validating.
 
-````ruby
+~~~~~
 
       isbn = StdNum::ISBN.normalize(goodISBN)
         # => a 13-digit ISBN with no dashes/spaces
@@ -37,14 +37,14 @@ We can deal with 10 or 13-digit ISBNs and convert between the two (when applicab
         puts "#{isbn} has a valid checkdigit"
       end
 
-````
+~~~~~
 
 # ISSN
 
 For an ISSN, normalization simply cleans up any extraneous characters,
 uppercases the final 'X' if need be, validates, and returns.
 
-````ruby
+~~~~~
 
       issn = StdNum::ISSN.normalize(rawissn)
       #  => the cleaned-up issn if valid; nil if not
@@ -55,7 +55,7 @@ uppercases the final 'X' if need be, validates, and returns.
       if StdNum::ISSN.valid?(rawissn)
         puts "#{issn} has a valid checkdigit"
       end
-````
+~~~~~
 
 # LCCN
 
@@ -67,7 +67,7 @@ there's no checkdigit.
 rawlccn may be a standalone LCCN as found in a record, or a URI of the form
 'http://lccn.loc.gov/89001234 .
 
-````ruby
+~~~~~
 
 
     lccn = StdNum::LCCN.normalize(rawlccn)
@@ -78,7 +78,7 @@ rawlccn may be a standalone LCCN as found in a record, or a URI of the form
     }
 
 
-````
+~~~~~
 
 
 ## Note on Patches/Pull Requests

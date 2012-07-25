@@ -2,6 +2,9 @@
 --no-private
 --embed-mixin ClassMethods
 --markup=markdown
+--markup-provider kramdown
+--charset utf-8
+--readme README.md
 -
 README.md
 ChangeLog.md
