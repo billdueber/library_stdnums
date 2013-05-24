@@ -1,3 +1,7 @@
+* 1.3.0 (2013.05.24)
+  * Added #at_least_trying? to do a basic syntax check for ISSN/ISBN
+  * Overload #valid? for ISBN/ISSN such that it returns 'nil' for bad syntax and
+    'false' for good-looking syntax, but bad checkdigit
 * 1.2.0 (2012.07.24)
   * Added a bunch of tests for LCCN normalization from perl module Business::LCCN
     (http://search.cpan.org/~anirvan/Business-LCCN/)

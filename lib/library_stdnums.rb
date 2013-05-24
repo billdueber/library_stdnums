@@ -51,6 +51,12 @@ module StdNum
   # Validate, convert, and normalize ISBNs (10-digit or 13-digit)
   module ISBN
     extend Helpers
+    
+    # Does it even look like an ISBN?
+    def self.at_least_trying? isbn
+      return !(reduce_to_basics(isbn, [10,13]))
+    end
+    
 
     # Compute check digits for 10 or 13-digit ISBNs. See algorithm at
     # http://en.wikipedia.org/wiki/International_Standard_Book_Number
@@ -86,11 +92,13 @@ module StdNum
     # Check to see if the checkdigit is correct
     # @param [String] isbn The ISBN (we'll try to clean it up if possible)
     # @param [Boolean] preprocessed Set to true if the ISBN has already been through reduce_to_basics
-    # @return [Boolean] Whether or not the checkdigit is correct
+    # @return [Boolean] Whether or not the checkdigit is correct. Sneakily, return 'nil' for 
+    #  values that don't even look like ISBNs, and 'false' for those that look possible but
+    #  don't normalize / have bad checkdigits
     def self.valid? isbn, preprocessed = false
       return nil if isbn.nil?
       isbn = reduce_to_basics(isbn, [10,13]) unless preprocessed
-      return false unless isbn
+      return nil unless isbn
       return false unless isbn[-1..-1] == self.checkdigit(isbn, true)
       return true
     end
@@ -171,6 +179,13 @@ module StdNum
   module ISSN
     extend Helpers
 
+
+    # Does it even look like an ISSN?
+    def self.at_least_trying? isbn
+      return !(reduce_to_basics(issn, 8))
+    end
+
+
     # Compute the checkdigit of an ISSN
     # @param [String] issn The ISSN (we'll try to clean it up if possible)
     # @param [Boolean] preprocessed Set to true if the number has already been through reduce_to_basic
@@ -195,11 +210,13 @@ module StdNum
     # Check to see if the checkdigit is correct
     # @param [String] issn The ISSN (we'll try to clean it up if possible)
     # @param [Boolean] preprocessed Set to true if the number has already been through reduce_to_basic
-    # @return [Boolean] Whether or not the checkdigit is correct
+    # @return [Boolean] Whether or not the checkdigit is correct. Sneakily, return 'nil' for 
+    #  values that don't even look like ISBNs, and 'false' for those that look possible but
+    #  don't normalize / have bad checkdigits
 
     def self.valid? issn, preprocessed = false
       issn = reduce_to_basics issn, 8 unless preprocessed
-      return false unless issn
+      return nil unless issn
       return issn[-1..-1] == self.checkdigit(issn, true)
     end
 
