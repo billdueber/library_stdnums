@@ -1,3 +1,6 @@
+* 1.4.0 (2013.10.23)
+  * Simplified gemfile/spec process
+  * Fixed backwards logic for ISBN.at_least_trying? and added tests
 * 1.3.0 (2013.05.24)
   * Added #at_least_trying? to do a basic syntax check for ISSN/ISBN
   * Overload #valid? for ISBN/ISSN such that it returns 'nil' for bad syntax and

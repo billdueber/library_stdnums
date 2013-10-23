@@ -64,6 +64,18 @@ describe "ISBN" do
   it "finds a good number valid" do
     StdNum::ISBN.valid?('9780306406157').must_equal true
   end
+  
+  it "says a good number is trying" do
+    StdNum::ISBN.at_least_trying?('9780306406157').must_equal true
+  end
+  
+  it "says bad data is not trying" do
+    StdNum::ISBN.at_least_trying?('978006406157').must_equal false
+    StdNum::ISBN.at_least_trying?('406157').must_equal false
+    StdNum::ISBN.at_least_trying?('$22').must_equal false
+    StdNum::ISBN.at_least_trying?('hello').must_equal false
+  end
+    
 
   it "finds a bad number invalid" do
     StdNum::ISBN.valid?('9780306406154').must_equal false

@@ -54,7 +54,7 @@ module StdNum
     
     # Does it even look like an ISBN?
     def self.at_least_trying? isbn
-      return !(reduce_to_basics(isbn, [10,13]))
+      reduce_to_basics(isbn, [10,13]) ? true : false
     end
     
 
