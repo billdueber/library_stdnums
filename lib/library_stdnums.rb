@@ -181,7 +181,7 @@ module StdNum
 
 
     # Does it even look like an ISSN?
-    def self.at_least_trying? isbn
+    def self.at_least_trying? issn
       return !(reduce_to_basics(issn, 8))
     end
 

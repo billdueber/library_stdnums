@@ -1,3 +1,5 @@
+* 1.4.1 (2013.12.02)
+  * Fixed bug in issn at_least_trying?
 * 1.4.0 (2013.10.23)
   * Simplified gemfile/spec process
   * Fixed backwards logic for ISBN.at_least_trying? and added tests
