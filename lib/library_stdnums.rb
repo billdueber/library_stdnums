@@ -21,6 +21,18 @@ module StdNum
       return (match[1].gsub(/\-/, '')).upcase
     end
 
+    # Same as STDNUMPAT but allowing for all numbers in the provided string
+    STDNUMPAT_MULTIPLE = /.*?(\d[\d\-]{6,}[xX]?)/
+
+    # Extract the most likely looking numbers from the string. This will be each
+    # string with digits-and-hyphens-and-maybe-a-trailing-X, with the hypens removed
+    # @param [String] str The string from which to extract the ISBN/ISSNs
+    # @return [Array] An array of extracted identifiers
+    def extract_multiple_numbers(str)
+      return if str == '' || str.nil?
+      str.scan(STDNUMPAT_MULTIPLE).flatten.map{ |i| i.gsub(/\-/, '').upcase }
+    end
+
     # Given any string, extract what looks like the most likely ISBN/ISSN
     # of the given size(s), or nil if nothing matches at the correct size.
     # @param [String] rawnum The raw string containing (hopefully) an ISSN/ISBN
@@ -51,12 +63,12 @@ module StdNum
   # Validate, convert, and normalize ISBNs (10-digit or 13-digit)
   module ISBN
     extend Helpers
-    
+
     # Does it even look like an ISBN?
     def self.at_least_trying? isbn
       reduce_to_basics(isbn, [10,13]) ? true : false
     end
-    
+
 
     # Compute check digits for 10 or 13-digit ISBNs. See algorithm at
     # http://en.wikipedia.org/wiki/International_Standard_Book_Number
@@ -92,7 +104,7 @@ module StdNum
     # Check to see if the checkdigit is correct
     # @param [String] isbn The ISBN (we'll try to clean it up if possible)
     # @param [Boolean] preprocessed Set to true if the ISBN has already been through reduce_to_basics
-    # @return [Boolean] Whether or not the checkdigit is correct. Sneakily, return 'nil' for 
+    # @return [Boolean] Whether or not the checkdigit is correct. Sneakily, return 'nil' for
     #  values that don't even look like ISBNs, and 'false' for those that look possible but
     #  don't normalize / have bad checkdigits
     def self.valid? isbn, preprocessed = false
@@ -210,7 +222,7 @@ module StdNum
     # Check to see if the checkdigit is correct
     # @param [String] issn The ISSN (we'll try to clean it up if possible)
     # @param [Boolean] preprocessed Set to true if the number has already been through reduce_to_basic
-    # @return [Boolean] Whether or not the checkdigit is correct. Sneakily, return 'nil' for 
+    # @return [Boolean] Whether or not the checkdigit is correct. Sneakily, return 'nil' for
     #  values that don't even look like ISBNs, and 'false' for those that look possible but
     #  don't normalize / have bad checkdigits
 
