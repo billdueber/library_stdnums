@@ -41,6 +41,14 @@ describe "Extract" do
     StdNum::ISBN.extract_multiple_numbers(identifiers_string)[1].must_equal '9780987115430'
   end
 
+  let(:string_with_no_identifiers) { 'This has no identifiers' }
+  it "will return an empty array when no identifiers are in the supplied string " do
+    StdNum::ISBN.extract_multiple_numbers(string_with_no_identifiers).must_be_kind_of Array
+    StdNum::ISBN.extract_multiple_numbers(string_with_no_identifiers).count.must_equal 0
+
+    StdNum::ISBN.extract_multiple_numbers('').must_be_kind_of Array
+    StdNum::ISBN.extract_multiple_numbers('').count.must_equal 0
+  end
   it "skips over short prefixing numbers" do
     StdNum::ISBN.extractNumber('ISBN13: 1234567890123').must_equal '1234567890123'
   end

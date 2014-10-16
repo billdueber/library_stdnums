@@ -29,7 +29,7 @@ module StdNum
     # @param [String] str The string from which to extract the ISBN/ISSNs
     # @return [Array] An array of extracted identifiers
     def extract_multiple_numbers(str)
-      return if str == '' || str.nil?
+      return [] if str == '' || str.nil?
       str.scan(STDNUMPAT_MULTIPLE).flatten.map{ |i| i.gsub(/\-/, '').upcase }
     end
 
