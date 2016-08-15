@@ -1,3 +1,5 @@
+* 1.5.0
+  * Added method StdNum::Helpers. extract_multiple_numbers (Michael Harrison)
 * 1.4.1 (2013.12.02)
   * Fixed bug in issn at_least_trying?
 * 1.4.0 (2013.10.23)
