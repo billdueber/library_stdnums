@@ -467,7 +467,6 @@ describe "LCCN tests from Business::LCCN perl module" do
                  :serial => '001234',
                  :prefix => 'a',
                  :year_cataloged => 1989,
-                 :serial => '001234',
               },
               {  :orig => 'http://lccn.loc.gov/ab89001234',
                  :canonical => 'ab 89001234 ',
