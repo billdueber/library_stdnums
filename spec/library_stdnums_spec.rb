@@ -33,6 +33,22 @@ describe "Extract" do
     StdNum::ISBN.extractNumber('12345').must_equal nil
   end
 
+  let(:identifiers_string) { '9780987115423 (print ed) 9780987115430 (web ed)' }
+  it "will extract multiple identifiers" do
+    StdNum::ISBN.extract_multiple_numbers(identifiers_string).must_be_kind_of Array
+    StdNum::ISBN.extract_multiple_numbers(identifiers_string).count.must_equal 2
+    StdNum::ISBN.extract_multiple_numbers(identifiers_string)[0].must_equal '9780987115423'
+    StdNum::ISBN.extract_multiple_numbers(identifiers_string)[1].must_equal '9780987115430'
+  end
+
+  let(:string_with_no_identifiers) { 'This has no identifiers' }
+  it "will return an empty array when no identifiers are in the supplied string " do
+    StdNum::ISBN.extract_multiple_numbers(string_with_no_identifiers).must_be_kind_of Array
+    StdNum::ISBN.extract_multiple_numbers(string_with_no_identifiers).count.must_equal 0
+
+    StdNum::ISBN.extract_multiple_numbers('').must_be_kind_of Array
+    StdNum::ISBN.extract_multiple_numbers('').count.must_equal 0
+  end
   it "skips over short prefixing numbers" do
     StdNum::ISBN.extractNumber('ISBN13: 1234567890123').must_equal '1234567890123'
   end
@@ -64,18 +80,18 @@ describe "ISBN" do
   it "finds a good number valid" do
     StdNum::ISBN.valid?('9780306406157').must_equal true
   end
-  
+
   it "says a good number is trying" do
     StdNum::ISBN.at_least_trying?('9780306406157').must_equal true
   end
-  
+
   it "says bad data is not trying" do
     StdNum::ISBN.at_least_trying?('978006406157').must_equal false
     StdNum::ISBN.at_least_trying?('406157').must_equal false
     StdNum::ISBN.at_least_trying?('$22').must_equal false
     StdNum::ISBN.at_least_trying?('hello').must_equal false
   end
-    
+
 
   it "finds a bad number invalid" do
     StdNum::ISBN.valid?('9780306406154').must_equal false
