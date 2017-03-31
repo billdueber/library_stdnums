@@ -112,6 +112,7 @@ module StdNum
       isbn = reduce_to_basics(isbn, [10,13]) unless preprocessed
       return nil unless isbn
       return false unless isbn[-1..-1] == self.checkdigit(isbn, true)
+      return false unless valid_prefix? normalize(isbn)
       return true
     end
 
@@ -184,7 +185,14 @@ module StdNum
       end
     end
 
-
+    # ISBN13 always starts with 978 or 979. For example: 1000000000012 has a valid check digit, but
+    # is not a valid ISBN13.
+    # @param [String] isbn13 The ISBN13 to be checked.
+    # @return [Boolean] Whether the ISBN13 starts with a valid prefix.
+    def self.valid_prefix?(isbn13)
+      return false unless isbn13.size == 13
+      isbn13.start_with?('978') || isbn13.start_with?('979')
+    end
   end
 
   # Validate and and normalize ISSNs
