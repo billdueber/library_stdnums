@@ -1,6 +1,16 @@
 language: ruby
-bundler_args: --without documentation
+cache: bundler
+sudo: false
 rvm:
-  - 2.2
-  - 1.9.3
   - jruby-19mode
+  - jruby-9.0.4.0
+  - 1.9
+  - 2.2
+  - 2.3.3
+  - 2.4.0
+before_install:
+  - gem update --system
+  - gem uninstall bundler
+  - gem update bundler
+jdk:
+  - oraclejdk8
