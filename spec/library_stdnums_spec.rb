@@ -129,7 +129,7 @@ describe "ISBN" do
   end
 
   it "identifies an invalid ISBN13 due to the prefix" do
-    StdNum::ISBN.valid_isbn13_prefix?('1000000000012').must_equal true
+    StdNum::ISBN.valid_isbn13_prefix?('9780000000002').must_equal true
     StdNum::ISBN.valid?('1000000000012').must_equal false
   end
 

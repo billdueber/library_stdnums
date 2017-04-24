@@ -112,7 +112,7 @@ module StdNum
       isbn = reduce_to_basics(isbn, [10,13]) unless preprocessed
       return nil unless isbn
       return false unless isbn[-1..-1] == self.checkdigit(isbn, true)
-      return false unless valid_isbn13_prefix? normalize(isbn)
+      return false unless isbn.size == 10 || valid_isbn13_prefix?(isbn)
       return true
     end
 
