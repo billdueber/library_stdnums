@@ -185,10 +185,11 @@ module StdNum
       end
     end
 
+    # Checks for a valid ISBN13 prefix
     # ISBN13 always starts with 978 or 979. For example: 1000000000012 has a valid check digit, but
     # is not a valid ISBN13.
     # @param [String] isbn13 The ISBN13 to be checked.
-    # @return [Boolean] Whether the ISBN13 starts with a valid prefix.
+    # @return [Boolean] If true then the prefix is valid
     def self.valid_isbn13_prefix?(isbn13)
       return false unless isbn13.size == 13
       ['978', '979'].map { |prefix| isbn13.start_with?(prefix) }.any?
