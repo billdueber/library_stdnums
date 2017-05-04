@@ -14,7 +14,7 @@ describe "Extract" do
   end
 
   it "should return nil on a non-match" do
-    StdNum::ISBN.extractNumber('bill dueber').must_equal nil
+    StdNum::ISBN.extractNumber('bill dueber').must_be_nil
   end
 
   it "should allow a trailing X" do
@@ -30,7 +30,7 @@ describe "Extract" do
   end
 
   it "doesn't allow numbers that are too short" do
-    StdNum::ISBN.extractNumber('12345').must_equal nil
+    StdNum::ISBN.extractNumber('12345').must_be_nil
   end
 
   let(:identifiers_string) { '9780987115423 (print ed) 9780987115430 (web ed)' }
@@ -98,7 +98,7 @@ describe "ISBN" do
   end
 
   it "returns nil when computing checksum for bad ISBN" do
-    StdNum::ISBN.checkdigit('12345').must_equal nil
+    StdNum::ISBN.checkdigit('12345').must_be_nil
   end
 
   it "converts 10 to 13" do
@@ -115,9 +115,9 @@ describe "ISBN" do
 
   it "normalizes" do
     StdNum::ISBN.normalize('0-306-40615-2').must_equal '9780306406157'
-    StdNum::ISBN.normalize('0-306-40615-X').must_equal nil
+    StdNum::ISBN.normalize('0-306-40615-X').must_be_nil
     StdNum::ISBN.normalize('ISBN: 978-0-306-40615-7').must_equal '9780306406157'
-    StdNum::ISBN.normalize('ISBN: 978-0-306-40615-3').must_equal nil
+    StdNum::ISBN.normalize('ISBN: 978-0-306-40615-3').must_be_nil
   end
 
   it "gets both normalized values" do

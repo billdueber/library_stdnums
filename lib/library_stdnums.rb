@@ -64,6 +64,9 @@ module StdNum
   module ISBN
     extend Helpers
 
+    TEN_TO_THIRTEEN_PREFIX = '978'.freeze
+    VALID_THIRTEEN_PREFIX = /\A97[89]/
+
     # Does it even look like an ISBN?
     def self.at_least_trying? isbn
       reduce_to_basics(isbn, [10,13]) ? true : false
@@ -142,7 +145,7 @@ module StdNum
       return nil unless isbn
       return nil unless valid?(isbn, true)
       return isbn if isbn.size == 13
-      prefix = '978' + isbn[0..8]
+      prefix = TEN_TO_THIRTEEN_PREFIX + isbn[0..8]
       return prefix + self.checkdigit(prefix + '0', true)
     end
 
@@ -158,7 +161,7 @@ module StdNum
       return isbn if isbn.size == 10
 
       # Can't be converted to ISBN-10? Bail
-      return nil unless isbn[0..2] == '978'
+      return nil unless isbn[0..2] == TEN_TO_THIRTEEN_PREFIX
 
       prefix = isbn[3..11]
       return prefix + self.checkdigit(prefix + '0')
@@ -191,8 +194,7 @@ module StdNum
     # @param [String] isbn13 The ISBN13 to be checked.
     # @return [Boolean] If true then the prefix is valid
     def self.valid_isbn13_prefix?(isbn13)
-      return false unless isbn13.size == 13
-      ['978', '979'].map { |prefix| isbn13.start_with?(prefix) }.any?
+      isbn13.size == 13 and !!VALID_THIRTEEN_PREFIX.match(isbn13)
     end
   end
 
