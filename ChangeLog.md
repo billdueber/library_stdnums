@@ -1,3 +1,6 @@
+* 1.6.0
+  * Add better checking for valid 97X prefixes for 13-digit ISBNS. Thanks to [Igor Ramos](https://github.com/igorframos)
+  and [Michael Harrison](https://github.com/michael-harrison).
 * 1.5.0
   * Added method StdNum::Helpers. extract_multiple_numbers (Michael Harrison)
 * 1.4.1 (2013.12.02)
